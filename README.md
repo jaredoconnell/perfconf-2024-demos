@@ -32,7 +32,7 @@ $ ./arcaflow -config=./config.yaml -input=./cpu-input.yaml -context=. -workflow=
 
 Run:
 ```
-$ ./arcaflow -config=./config.yaml -input=./cpu-input.yaml -context=. -workflow=parent-workflow.yaml 
+$ ./arcaflow -config=./config.yaml -input=./parent-input.yaml -context=. -workflow=parent-workflow.yaml 
 ```
 
 
@@ -50,6 +50,6 @@ uuid: !expr '"appended string " + $.steps.uuidgen.outputs.success.uuid'
 
 Then Run:
 ```
-$ ./arcaflow -config=./config.yaml -input=./cpu-input.yaml -context=. -workflow=parent-workflow.yaml 
+$ ./arcaflow -config=./config.yaml -input=./parent-input.yaml -context=. -workflow=parent-workflow.yaml 
 ```
 
