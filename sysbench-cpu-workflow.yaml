@@ -1,0 +1,46 @@
+version: v0.2.0
+input:
+  root: SysbenchCpuWorkflowInput
+  objects:
+    SysbenchCpuWorkflowInput:
+      id: SysbenchCpuWorkflowInput
+      properties:
+        sysbench_params:
+          display:
+            description: The parameters for the sysbench workload
+            name: sysbench parameters
+          type:
+            type_id: ref
+            id: SysbenchCpuInputParams
+            namespace: $.steps.sysbench_cpu.starting.input
+          required: true
+        pcp_params:
+          display:
+            description: The parameters for the PCP workload
+            name: PCP parameters
+          type:
+            type_id: ref
+            id: PcpInputParams
+            namespace: $.steps.pcp.starting.input
+
+steps:
+  pcp:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-pcp:0.8.0
+    step: start-pcp
+    input: !expr $.input.pcp_params
+    stop_if: !expr $.steps.sysbench_cpu.outputs
+  sysbench_cpu:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-sysbench:0.6.0
+    step: sysbenchcpu
+    input: !expr $.input.sysbench_params
+    wait_for: !expr $.steps.pcp.starting.started
+
+
+outputs:
+  success:
+    pcp: !expr $.steps.pcp.outputs.success.pcp_output
+    sysbench_cpu_results: !expr $.steps.sysbench_cpu.outputs.success

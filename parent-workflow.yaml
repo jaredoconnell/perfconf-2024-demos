@@ -1,0 +1,426 @@
+version: v0.2.0
+input:
+  root: SysbenchLoopWorkflowInput
+  objects:
+    DocumentRequest:
+      id: DocumentRequest
+      properties:
+        default_index:
+          display:
+            description: Name of the default index that will receive the data.
+            name: index
+          required: true
+          type:
+            min: 1
+            type_id: string
+        password:
+          display:
+            description: The password for the given user.
+            name: password
+          required: false
+          type:
+            type_id: string
+        tls_verify:
+          default: 'true'
+          display:
+            description: For development and testing purposes, this can be set
+              to False to disable TLS verification for connections to Opensearch-compatible
+              services.
+            name: TLS verify
+          required: false
+          type:
+            type_id: bool
+        url:
+          display:
+            description: The URL for the Opensearch-compatible instance.
+            name: url
+          required: true
+          type:
+            type_id: string
+        username:
+          display:
+            description: A username for an authorized user for the given Opensearch-compatible
+              instance.
+            name: username
+          required: false
+          type:
+            min: 1
+            type_id: string
+    SysbenchCpuInputParams:
+      id: SysbenchCpuInputParams
+      properties:
+        threads:
+          display:
+            description: The number of threads sysbench will run
+            name: sysbench threads
+          type:
+            type_id: integer
+        time:
+          display:
+            description: The maximum runtime in seconds for the sysbench tests
+            name: sysbench max runtime seconds
+          type:
+            type_id: integer
+        percentile:
+          display:
+            description: The percentile to report latency metrics
+            name: sysbench latency percentile
+          type:
+            type_id: integer
+        cpu-max-prime:
+          display:
+            description: The upper limit of the number of prime numbers generated
+            name: sysbench cpu max primes
+          type:
+            type_id: integer
+    SysbenchMemoryInputParams:
+      id: SysbenchMemoryInputParams
+      properties:
+        threads:
+          display:
+            description: The number of threads sysbench will run
+            name: sysbench threads
+          type:
+            type_id: integer
+        time:
+          display:
+            description: The maximum runtime in seconds for the sysbench tests
+            name: sysbench max runtime seconds
+          type:
+            type_id: integer
+        percentile:
+          display:
+            description: The percentile to report latency metrics
+            name: sysbench latency percentile
+          type:
+            type_id: integer
+        memory-block-size:
+          display:
+            description: The block size of data to transfer in KiB
+            name: memory block size
+          type:
+            type_id: string
+        memory-total-size:
+          display:
+            name: Total size of data to transfer in GiB
+          required: false
+          type:
+            type_id: string
+        memory-access-mode:
+          display:
+            description: The access mode into memory  seq or rnd
+            name: memory access mode
+          required: false
+          type:
+            type_id: enum_string
+            values:
+              rnd:
+                name: RND
+              seq:
+                name: SEQ
+        memory-oper:
+          display:
+            description: The memory operation  read or write
+            name: memory operation
+          required: false
+          type:
+            type_id: enum_string
+            values:
+              none:
+                name: NONE
+              read:
+                name: READ
+              write:
+                name: WRITE
+    PcpInputParams:
+      id: PcpInputParams
+      properties:
+        flatten:
+          default: 'false'
+          display:
+            description: Processes the metrics first into a two-dimensional format
+              via the pcp2csv converter, and then converts the CSV to JSON, effectively
+              flattening the data structure. This is useful when indexing metrics
+              to a service like Elasticsearch.
+            name: flatten JSON structure
+          required: false
+          type:
+            type_id: bool
+        pmlogger_interval:
+          display:
+            description: The logger collection interval for PCP pmlogger
+            name: PCP pmlogger collection interval
+          type:
+            type_id: float
+          required: false
+          default: 1.0
+        pmlogger_metrics:
+          display:
+            description: The pmrep-compatible metrics values to report as a space-separated string.
+            name: pmlogger metrics to report
+          type:
+            type_id: string
+          required: false
+          default: '"kernel.all.load mem.util.used kernel.all.cpu.user kernel.all.cpu.sys"'
+    HorreumInputParams:
+      id: HorreumInputParams
+      properties:
+        horreum_url:
+          display:
+            description: Base URL for the Horreum server.
+            name: horreum url
+          required: true
+          type:
+            pattern: ((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*
+            type_id: string
+        horreum_keycloak_url:
+          display:
+            description: Base URL for the Horreum Keycloak server.
+            name: horreum keycloak url
+          required: true
+          type:
+            pattern: ((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*
+            type_id: string
+        horreum_username:
+          display:
+            description: Username for the Horreum server.
+            name: horreum username
+          required: true
+          type:
+            type_id: string
+        horreum_password:
+          display:
+            description: Password for the Horreum server.
+            name: horreum password
+          required: true
+          type:
+            type_id: string
+        test_name:
+          display:
+            description: Name of the target test in Horreum for the object being
+              uploaded.
+            name: test name
+          required: true
+          type:
+            type_id: string
+        test_owner:
+          display:
+            description: Owner of the object being uploaded.
+            name: test owner
+          required: true
+          type:
+            type_id: string
+        test_access_rights:
+          display:
+            description: Access rights for the object being uploaded.
+            name: test access rights
+          required: true
+          type:
+            type_id: enum_string
+            values:
+              PRIVATE:
+                name: PRIVATE
+              PROTECTED:
+                name: PROTECTED
+              PUBLIC:
+                name: PUBLIC
+        tls_verify:
+          default: 'true'
+          display:
+            description: For development and testing pruposes, this can be set
+              to False to disable TLS verification for connections to Keycloak
+              and Horreum services.
+            name: TLS verify
+          required: false
+          type:
+            type_id: bool
+    SysbenchLoopWorkflowInput:
+      id: SysbenchLoopWorkflowInput
+      properties:
+        run_id:
+          display:
+            description: A unique run identifier for tracking groups of workflows triggered by external automation/CI
+            name: Run ID
+          type:
+            type_id: string
+          default: "\"\""
+          required: false
+        user:
+          display:
+            description: A user name identifier for tracking groups of workflows triggered by external automation/CI
+            name: User
+          type:
+            type_id: string
+          default: "\"\""
+          required: false
+        description:
+          display:
+            description: A description of the workflow being run
+            name: Description
+          type:
+            type_id: string
+          default: "\"\""
+          required: false
+        horreum_params:
+          display:
+            description: The parameters for uploading results to the Horreum server
+            name: horreum parameters
+          type:
+            type_id: ref
+            id: HorreumInputParams
+        opensearch_params:
+          display:
+            description: The parameters for uploading results to the opensearch server
+            name: opensearch parameters
+          type:
+            type_id: ref
+            id: DocumentRequest 
+        sysbench_cpu_tests:
+          type:
+            type_id: list
+            items:
+              type_id: object
+              id: SysbenchCpuWorkflowInput
+              properties:
+                sysbench_params:
+                  type:
+                    type_id: ref
+                    id: SysbenchCpuInputParams
+                pcp_params:
+                  type:
+                    type_id: ref
+                    id: PcpInputParams
+        sysbench_memory_tests:
+          type:
+            type_id: list
+            items:
+              type_id: object
+              id: SysbenchMemoryWorkflowInput
+              properties:
+                sysbench_params:
+                  type:
+                    type_id: ref
+                    id: SysbenchMemoryInputParams
+                pcp_params:
+                  type:
+                    type_id: ref
+                    id: PcpInputParams
+
+steps:
+  uuidgen:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-utilities:0.5.1
+    step: uuid
+    input: {}
+  system_config:
+    plugin:
+      deployment_type: image
+      src: quay.io/dustinblack/arcaflow-plugin-rhivos-metadata:latest
+    input: {}
+  ansible_facts:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-metadata:0.4.0
+    input: {}
+  start_timestamp:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-utilities:0.5.1
+    step: timestamp
+    input: {}
+  sysbench_cpu_loop:
+    kind: foreach
+    items: !expr $.input.sysbench_cpu_tests
+    workflow: sysbench-cpu-workflow.yaml
+    parallelism: 1
+    wait_for: !expr $.steps.start_timestamp.outputs.success
+  sysbench_memory_loop:
+    kind: foreach
+    items: !expr $.input.sysbench_memory_tests
+    workflow: sysbench-memory-workflow.yaml
+    parallelism: 1
+    wait_for: !expr $.steps.sysbench_cpu_loop.outputs.success
+  end_timestamp:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-utilities:0.5.1
+    step: timestamp
+    input: {}
+    wait_for: !expr $.steps.sysbench_memory_loop.outputs.success
+
+  # opensearch_upload:
+  #   plugin:
+  #     deployment_type: image
+  #     src: quay.io/arcalot/arcaflow-plugin-opensearch:use-bulk-actions_4f567b9
+  #     # src: localhost/opensearch-test:latest
+  #   step: opensearch
+  #   input:
+  #     url: !expr $.input.opensearch_params.url
+  #     default_index: !expr $.input.opensearch_params.default_index
+  #     username: !expr $.input.opensearch_params.username
+  #     password: !expr $.input.opensearch_params.password
+  #     tls_verify: !expr $.input.opensearch_params.tls_verify
+  #     metadata:
+  #       uuid: !expr $.steps.uuidgen.outputs.success.uuid
+  #       run_id: !expr $.input.run_id
+  #       user: !expr $.input.user
+  #       description: !expr $.input.description
+  #       start_time: !expr $.steps.start_timestamp.outputs.success.timestamp
+  #       end_time: !expr $.steps.end_timestamp.outputs.success.timestamp
+  #       system_config: !expr $.steps.system_config.outputs.success
+  #       ansible_facts: !expr $.steps.ansible_facts.outputs.success
+  #     bulk_upload_list: !expr $.steps.sysbench_cpu_loop.outputs.success.data
+      # bulk_upload_list:
+      #   - operation:
+      #       create: {}
+      #     data:
+      #       foo: bar
+      
+  #horreum_upload:
+  #  plugin:
+  #    deployment_type: image
+  #    src: quay.io/arcalot/arcaflow-plugin-horreum-client:0.1.1
+  #  input:
+  #    horreum_url: !expr $.input.horreum_params.horreum_url
+  #    horreum_keycloak_url: !expr $.input.horreum_params.horreum_keycloak_url
+  #    tls_verify: !expr $.input.horreum_params.tls_verify
+  #    horreum_username: !expr $.input.horreum_params.horreum_username
+  #    horreum_password: !expr $.input.horreum_params.horreum_password
+  #    test_name: !expr $.input.horreum_params.test_name
+  #    test_owner: !expr $.input.horreum_params.test_owner
+  #    test_access_rights: !expr $.input.horreum_params.test_access_rights
+  #    test_start_time: "$.start_time"
+  #    test_stop_time: "$.end_time"
+  #    data_object:
+  #      $schema: urn:rhivos-arcaflow-sysbench-pcp:01
+  #      uuid: !expr $.steps.uuidgen.outputs.success.uuid
+  #      run_id: !expr $.input.run_id
+  #      user: !expr $.input.user
+  #      description: !expr $.input.description
+  #      start_time: !expr $.steps.start_timestamp.outputs.success.timestamp
+  #      end_time: !expr $.steps.end_timestamp.outputs.success.timestamp
+  #      system_config: !expr $.steps.system_config.outputs.success
+  #      ansible_facts: !expr $.steps.ansible_facts.outputs.success
+  #      # NOTE: Unable to isolate the workflow list output currently due to engine bug
+  #      # sysbench_cpu_loop: !expr $.steps.sysbench_cpu_loop.outputs.success.data[1]
+  #      # sysbench_memory_loop: !expr $.steps.sysbench_memory_loop.outputs.success.data[1]
+  #      sysbench_cpu_loop: !expr $.steps.sysbench_cpu_loop.outputs.success.data
+  #      sysbench_memory_loop: !expr $.steps.sysbench_memory_loop.outputs.success.data
+
+outputs:
+  success:
+    metadata:
+        uuid: !expr $.steps.uuidgen.outputs.success.uuid
+        run_id: !expr $.input.run_id
+        user: !expr $.input.user
+        description: !expr $.input.description
+        start_time: !expr $.steps.start_timestamp.outputs.success.timestamp
+        end_time: !expr $.steps.end_timestamp.outputs.success.timestamp
+        system_config: !expr $.steps.system_config.outputs.success
+        ansible_facts: !expr $.steps.ansible_facts.outputs.success
+    cpu_loop_output: !expr '$.steps.sysbench_cpu_loop.outputs.success.data[0].pcp[1]'
+    #sysbench_memory_loop: !expr $.steps.sysbench_memory_loop.outputs.success.data
+    # cpu_index_loop_output: !expr $.steps.cpu_index_loop.outputs.success
+    # opensearch_success: !expr $.steps.opensearch_upload.outputs.success
+    #horreum_run_id: !expr $.steps.horreum_upload.outputs.success.horreum_run_id

@@ -1,0 +1,132 @@
+version: v0.2.0
+input:
+  root: SysbenchMemoryWorkflowInput
+  objects:
+    PcpInputParams:
+      id: PcpInputParams
+      properties:
+        flatten:
+          default: 'false'
+          display:
+            description: Processes the metrics first into a two-dimensional format
+              via the pcp2csv converter, and then converts the CSV to JSON, effectively
+              flattening the data structure. This is useful when indexing metrics
+              to a service like Elasticsearch.
+            name: flatten JSON structure
+          required: false
+          type:
+            type_id: bool
+        pmlogger_interval:
+          display:
+            description: The logger collection interval for PCP pmlogger
+            name: PCP pmlogger collection interval
+          type:
+            type_id: float
+          required: false
+          default: 1.0
+        pmlogger_metrics:
+          display:
+            description: The pmrep-compatible metrics values to report as a space-separated string.
+            name: pmlogger metrics to report
+          type:
+            type_id: string
+          required: false
+          default: '"kernel.all.load kernel.percpu.cpu.vuser kernel.percpu.cpu.sys kernel.percpu.cpu.wait.total mem.util.used mem.vmstat.pgpgin mem.vmstat.pgpgout swap.pagesin swap.pagesout"'
+    SysbenchMemoryInputParams:
+      id: SysbenchMemoryInputParams
+      properties:
+        threads:
+          display:
+            description: The number of threads sysbench will run
+            name: sysbench threads
+          type:
+            type_id: integer
+        time:
+          display:
+            description: The maximum runtime in seconds for the sysbench tests
+            name: sysbench max runtime seconds
+          type:
+            type_id: integer
+        percentile:
+          display:
+            description: The percentile to report latency metrics
+            name: sysbench latency percentile
+          type:
+            type_id: integer
+        memory-block-size:
+          display:
+            description: The block size of data to transfer in KiB
+            name: memory block size
+          type:
+            type_id: string
+        memory-total-size:
+          display:
+            name: Total size of data to transfer in GiB
+          required: false
+          type:
+            type_id: string
+        memory-access-mode:
+          display:
+            description: The access mode into memory  seq or rnd
+            name: memory access mode
+          required: false
+          type:
+            type_id: enum_string
+            values:
+              rnd:
+                name: RND
+              seq:
+                name: SEQ
+        memory-oper:
+          display:
+            description: The memory operation  read or write
+            name: memory operation
+          required: false
+          type:
+            type_id: enum_string
+            values:
+              none:
+                name: NONE
+              read:
+                name: READ
+              write:
+                name: WRITE
+    SysbenchMemoryWorkflowInput:
+      id: SysbenchMemoryWorkflowInput
+      properties:
+        sysbench_params:
+          display:
+            description: The parameters for the sysbench workload
+            name: sysbench parameters
+          type:
+            type_id: ref
+            id: SysbenchMemoryInputParams
+          required: true
+        pcp_params:
+          display:
+            description: The parameters for the PCP workload
+            name: PCP parameters
+          type:
+            type_id: ref
+            id: PcpInputParams
+
+steps:
+  pcp:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-pcp:0.8.0
+    step: start-pcp
+    input: !expr $.input.pcp_params
+    stop_if: !expr $.steps.sysbench_memory.outputs
+  sysbench_memory:
+    plugin:
+      deployment_type: image
+      src: quay.io/arcalot/arcaflow-plugin-sysbench:0.6.0
+    step: sysbenchmemory
+    input: !expr $.input.sysbench_params
+    wait_for: !expr $.steps.pcp.starting.started
+
+outputs:
+ success:
+    pcp: !expr $.steps.pcp.outputs.success.pcp_output
+    sysbench_memory_results: !expr $.steps.sysbench_memory.outputs.success

@@ -1,0 +1,8 @@
+sysbench_params:
+  threads: 1
+  time: 10
+  percentile: 99
+  cpu-max-prime: 500000
+pcp_params:
+  pmlogger_interval: 1.0
+  pmlogger_metrics: "kernel.all.load kernel.percpu.cpu.vuser kernel.percpu.cpu.sys kernel.percpu.cpu.wait.total mem.util.used mem.vmstat.pgpgin mem.vmstat.pgpgout swap.pagesin swap.pagesout"

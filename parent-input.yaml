@@ -1,0 +1,77 @@
+run_id: sysbench-loop-test
+user: foobar
+description: this is the description of the workflow being run
+horreum_params:
+  horreum_url: https://my.horreum.server.url
+  horreum_keycloak_url: https://my.horreum.keycloak.server.url
+  horreum_username: my-horreum-username
+  horreum_password: my-horreum-password
+  test_name: my-test-name
+  test_owner: my-test-owner
+  test_access_rights: PUBLIC
+  tls_verify: False
+opensearch_params:
+  url: https://my.opensearch.server.url
+  default_index: my-opensearch-index
+  username: my-opensearch-username
+  password: my-opensearch-password
+  tls_verify: False
+sysbench_cpu_tests:
+  - sysbench_params:
+      threads: 1
+      time: 3
+      percentile: 99
+      cpu-max-prime: 500000
+    pcp_params:
+      pmlogger_interval: 1.0
+      pmlogger_metrics: "kernel.all.load mem.util.used"
+  # - sysbench_params:
+  #     threads: 4
+  #     time: 10  
+  #     percentile: 99
+  #     cpu-max-prime: 500000
+  #   pcp_params:
+  #     pmlogger_interval: 1.0
+  #     pmlogger_metrics: "kernel.all.load mem.util.used"
+  # - sysbench_params:
+  #     threads: 8
+  #     time: 10
+  #     percentile: 99
+  #     cpu-max-prime: 500000
+  #   pcp_params:
+  #     pmlogger_interval: 1.0
+  #     pmlogger_metrics: "kernel.all.load mem.util.used"
+sysbench_memory_tests:
+  - sysbench_params:
+      threads: 1
+      time: 3
+      percentile: 99
+      memory-block-size: "1K"
+      memory-access-mode: "rnd"
+      memory-oper: "read"
+      memory-total-size: "100G"
+    pcp_params:
+      pmlogger_interval: 1.0
+      pmlogger_metrics: "kernel.all.load mem.util.used"
+  # - sysbench_params:
+  #     threads: 4
+  #     time: 10  
+  #     percentile: 99
+  #     memory-block-size: "1K"
+  #     memory-access-mode: "rnd"
+  #     memory-oper: "read"
+  #     memory-total-size: "100G"
+  #   pcp_params:
+  #     pmlogger_interval: 1.0
+  #     pmlogger_metrics: "kernel.all.load mem.util.used"
+  # - sysbench_params:
+  #     threads: 8
+  #     time: 10
+  #     percentile: 99
+  #     memory-block-size: "1K"
+  #     memory-access-mode: "rnd"
+  #     memory-oper: "read"
+  #     memory-total-size: "100G"
+  #   pcp_params:
+  #     pmlogger_interval: 1.0
+  #     pmlogger_metrics: "kernel.all.load mem.util.used"
