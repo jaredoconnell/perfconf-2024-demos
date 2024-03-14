@@ -16,23 +16,23 @@ The config has podman set as the deployer. If you're using Docker, change the li
 Requirements: Docker or Podman
 
 ```
-$ echo '{"threads": 2, "time": 5}' | podman run -i --rm quay.io/arcalot/arcaflow-plugin-sysbench:latest -s sysbenchcpu -f -
+echo '{"threads": 2, "time": 5}' | podman run -i --rm quay.io/arcalot/arcaflow-plugin-sysbench:latest -s sysbenchcpu -f -
 ```
 
 Explanation: The JSON input is being piped into the `sysbenchcpu` `step` within the `arcaflow-plugin-sysbench` plugin.
 
-## Demo 3: Basic workflow
+## Demo 2: Basic workflow
 
 Run:
 ```
-$ ./arcaflow -config=./config.yaml -input=./cpu-input.yaml -context=. -workflow=sysbench-cpu-workflow.yaml
+./arcaflow -config=./config.yaml -input=./cpu-input.yaml -context=. -workflow=sysbench-cpu-workflow.yaml
 ```
 
 ## Demo 3: Parent workflow
 
 Run:
 ```
-$ ./arcaflow -config=./config.yaml -input=./parent-input.yaml -context=. -workflow=parent-workflow.yaml 
+./arcaflow -config=./config.yaml -input=./parent-input.yaml -context=. -workflow=parent-workflow.yaml 
 ```
 
 
@@ -50,6 +50,6 @@ uuid: !expr '"appended string " + $.steps.uuidgen.outputs.success.uuid'
 
 Then Run:
 ```
-$ ./arcaflow -config=./config.yaml -input=./parent-input.yaml -context=. -workflow=parent-workflow.yaml 
+./arcaflow -config=./config.yaml -input=./parent-input.yaml -context=. -workflow=parent-workflow.yaml 
 ```
 
